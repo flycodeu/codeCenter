@@ -2,6 +2,8 @@
 title: 自定义Starter
 createTime: 2025/03/04 09:28:52
 permalink: /article/3td6t8k5/
+tags:
+  - SpringBoot
 ---
 > 本文作者：程序员飞云
 >

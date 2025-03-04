@@ -2,6 +2,8 @@
 title: Centos7安装Redis
 createTime: 2025/03/04 09:28:52
 permalink: /article/bcdfdwr3/
+tags:
+  - Centos7
 ---
 > 本文作者：程序员飞云
 >

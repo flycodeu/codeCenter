@@ -2,6 +2,8 @@
 title: 查询redis运行信息
 createTime: 2025/03/04 09:28:52
 permalink: /article/hcsh5z0o/
+tags:
+  - SpringBoot
 ---
 >作者：程序员飞云
 >

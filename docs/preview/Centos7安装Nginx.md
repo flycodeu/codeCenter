@@ -2,6 +2,8 @@
 title: Centos7安装Nginx
 createTime: 2025/03/04 09:28:52
 permalink: /article/iznod68w/
+tags:
+  - Centos7
 ---
 > 本文作者：程序员飞云
 >

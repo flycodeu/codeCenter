@@ -2,6 +2,9 @@
 title: 腾讯云COS使用
 createTime: 2025/03/04 09:28:52
 permalink: /article/2rzroze6/
+tags:
+  - SpringBoot
+  - 对象存储
 ---
 > 本文作者：程序员飞云
 >

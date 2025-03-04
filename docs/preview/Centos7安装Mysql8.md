@@ -2,6 +2,8 @@
 title: Centos7安装Mysql8
 createTime: 2025/03/04 09:28:52
 permalink: /article/5loibxw5/
+tags:
+  - Centos7
 ---
 > 本文作者：程序员飞云
 >

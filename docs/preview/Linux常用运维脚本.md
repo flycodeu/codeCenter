@@ -2,6 +2,8 @@
 title: Linux常用运维脚本
 createTime: 2025/03/04 09:28:52
 permalink: /article/rd6vk0lr/
+tags:
+  - Linux
 ---
 
 > 本文作者：运维网工

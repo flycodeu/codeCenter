@@ -2,6 +2,8 @@
 title: C++快速入门
 createTime: 2025/03/04 09:25:15
 permalink: /article/bcow3ffh/
+tags:
+  - C++
 ---
 > 本文作者：程序员飞云
 >

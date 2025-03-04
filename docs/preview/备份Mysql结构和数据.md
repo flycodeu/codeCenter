@@ -2,6 +2,8 @@
 title: 备份Mysql结构和数据
 createTime: 2025/03/04 09:28:52
 permalink: /article/07khmkn2/
+tags:
+  - Mysql
 ---
 > 本文作者：程序员飞云
 >

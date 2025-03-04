@@ -2,6 +2,9 @@
 title: SpringBoot结合七牛云
 createTime: 2025/03/04 09:28:52
 permalink: /article/cliv5mtd/
+tags:
+  - SpringBoot
+  - 对象存储
 ---
 > 本文作者：程序员飞云
 >

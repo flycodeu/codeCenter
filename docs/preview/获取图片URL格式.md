@@ -2,6 +2,8 @@
 title: 获取图片URL格式
 createTime: 2025/03/04 09:28:52
 permalink: /article/sucw4nkv/
+tags:
+  - SpringBoot
 ---
 > 本文作者：程序员飞云
 >

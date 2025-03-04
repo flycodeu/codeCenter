@@ -2,6 +2,9 @@
 title: Vertx监听指定端口
 createTime: 2025/03/04 09:28:52
 permalink: /article/twfyqhip/
+tags:
+  - SpringBoot
+  - vertx
 ---
 > 本文作者：程序员飞云
 >

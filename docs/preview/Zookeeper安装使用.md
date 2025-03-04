@@ -2,6 +2,8 @@
 title: Zookeeper安装使用
 createTime: 2025/03/04 09:28:52
 permalink: /article/xf618rgv/
+tags:
+  - Zookeeper
 ---
 > 本文作者：程序员飞云
 >

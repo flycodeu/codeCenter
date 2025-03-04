@@ -2,6 +2,8 @@
 title: Idea的Git忽略文件
 createTime: 2025/03/04 09:49:05
 permalink: /article/r82mjmsn/
+tags:
+  - Git
 ---
 > 贴心的编程学习路线，全面的编程知识百科
 >

@@ -2,6 +2,8 @@
 title: SpringBoot自定义实现日志记录
 createTime: 2025/03/04 09:28:52
 permalink: /article/crg94zm6/
+tags:
+  - SpringBoot
 ---
 > 本文作者：程序员飞云
 >

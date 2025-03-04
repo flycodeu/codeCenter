@@ -2,6 +2,9 @@
 title: SpringBoot发送简单邮件
 createTime: 2025/03/04 09:28:52
 permalink: /article/q75zwbqy/
+tags:
+  - SpringBoot
+  - 邮件 
 ---
 > 本文作者：程序员飞云
 >

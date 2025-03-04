@@ -2,6 +2,8 @@
 title: 使用oshi监控java运行
 createTime: 2025/03/04 09:28:52
 permalink: /article/3vzpzz57/
+tags:
+  - SpringBoot
 ---
 > 本文作者：程序员飞云
 >

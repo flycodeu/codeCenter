@@ -2,6 +2,9 @@
 title: 简单Java爬虫
 createTime: 2025/03/04 09:28:52
 permalink: /article/vjjp6ywc/
+tags:
+  - SpringBoot
+  - 爬虫
 ---
 > 本文作者：程序员飞云
 >

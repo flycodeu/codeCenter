@@ -2,6 +2,8 @@
 title: Centos7安装Java8
 createTime: 2025/03/04 09:28:52
 permalink: /article/lyyk35fw/
+tags:
+  - Centos7
 ---
 > 本文作者：程序员飞云
 >

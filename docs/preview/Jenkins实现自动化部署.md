@@ -2,6 +2,8 @@
 title: Jenkins实现自动化部署
 createTime: 2025/03/04 09:28:52
 permalink: /article/u0e0xdqk/
+tags:
+  - Jenkins
 ---
 > 本文作者：程序员飞云
 >

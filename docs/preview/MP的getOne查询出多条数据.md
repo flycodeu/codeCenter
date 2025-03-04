@@ -2,6 +2,8 @@
 title: MP的getOne查询出多条数据
 createTime: 2025/03/04 09:28:52
 permalink: /article/zwqyjkml/
+tags:
+  - Mybatis Plus
 ---
 > 本文作者：程序员飞云
 >

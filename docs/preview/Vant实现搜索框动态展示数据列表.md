@@ -2,6 +2,8 @@
 title: Vant实现搜索框动态展示数据列表
 createTime: 2025/03/04 09:28:52
 permalink: /article/k1bio6yf/
+tags:
+  - 前端
 ---
 > 本文作者：程序员飞云
 >
