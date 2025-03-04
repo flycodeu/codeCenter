@@ -1,0 +1,31 @@
+{
+  "name": "飞云的编程宝典",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "飞云的编程宝典",
+  "author": "flycodeu <1785613048@qq.com>",
+  "license": "MIT",
+  "engines": {
+    "node": "^18.20.0 || >=20.0.0"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:dev-clean": "vuepress dev docs --clean-cache --clean-temp",
+    "docs:build": "vuepress build docs --clean-cache --clean-temp",
+    "docs:preview": "http-server docs/.vuepress/dist",
+    "vp-update": "npx vp-update"
+  },
+  "devDependencies": {
+    "@vuepress/bundler-vite": "2.0.0-rc.20",
+    "http-server": "^14.1.1",
+    "sass-embedded": "^1.85.1",
+    "typescript": "^5.7.3",
+    "vue": "^3.5.13",
+    "vuepress": "2.0.0-rc.20",
+    "vuepress-plugin-md-enhance": "^2.0.0-rc.72",
+    "vuepress-theme-plume": "1.0.0-rc.135"
+  },
+  "dependencies": {
+    "vuepress-plugin-md-power": "^1.0.0-rc.135"
+  }
+}
