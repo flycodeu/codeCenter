@@ -203,7 +203,6 @@ public BaseResponse<String> famousDouBanBook(){
 
 ![pqtp-8](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com//codeCenterImg/pqtp-8.png)
 这个网站有点朴素，列表展示使用的div，导致获取联系电话的时候 需要使用:contains伪类来确保只提取包含"联系电话"文本的元素，而且取出来的数据是以间隔存储的，所以以下方式需要手动将间隔分离成不同的对象存储
-![pqtp-8](D:/BaiduNetdiskDownload/pachong/pqtp-8.png)
 
 ```java
 public static void main(String[] args) {

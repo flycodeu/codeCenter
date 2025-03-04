@@ -190,7 +190,6 @@ public class QuickStartMoreConsumerMq {
 ```
 
 消费者运行截图
-![rmpzsy-4](D:/BaiduNetdiskDownload/rabbitmq/rmpzsy-4.png)
 
 ## 7. fanout交换机
 特点：会将消息转发给所有绑定到该交换机的消息队列上面去
