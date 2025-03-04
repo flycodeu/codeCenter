@@ -41,7 +41,7 @@ export default defineThemeConfig({
         name: '飞云的编程宝典',
         description: '飞云的编程宝典',
         // circle: true,
-        // location: '',
+         location: 'JiangSu',
         // organization: '',
     },
 

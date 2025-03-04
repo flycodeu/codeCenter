@@ -4,7 +4,13 @@ createTime: 2025/03/04 09:28:52
 permalink: /article/u0e0xdqk/
 tags:
   - Jenkins
+cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/logo.png
+coverStyle:
+  layout: left
 ---
+本文介绍了Centos7安装Jenkins以及相关使用步骤。
+
+<!-- more -->
 > 本文作者：程序员飞云
 >
 > 本站地址：[https://www.flycode.icu](https://www.flycode.icu)

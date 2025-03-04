@@ -18,5 +18,10 @@ config:
           theme: alt
           text: My Github →
           link: https://github.com/flycodeu/codeCenter.git
+          
+        - 
+          theme: alt
+          text: 微信关注程序员飞云
+          link: /blog/
         
 ---
