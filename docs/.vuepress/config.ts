@@ -80,6 +80,9 @@ export default defineUserConfig({
                 whitespace: true, // 启用 空格/Tab 高亮
                 lineNumbers: true, // 启用行号
             },
+            // markdownEnhance: {
+            //     chart: true,
+            // },
 
             /* 本地搜索, 默认启用 */
             // search: true,
@@ -173,17 +176,17 @@ export default defineUserConfig({
              * 评论 comments
              * @see https://theme-plume.vuejs.press/guide/features/comments/
              */
-            // comment: {
-            //     provider: 'Waline', // "Artalk" | "Giscus" | "Twikoo" | "Waline"
-            //     comment: true,
-            //     repo: '',
-            //     repoId: '',
-            //     category: '',
-            //     categoryId: '',
-            //     mapping: 'pathname',
-            //     reactionsEnabled: true,
-            //     inputPosition: 'top',
-            // },
+            comment: {
+                provider: 'Giscus', // "Artalk" | "Giscus" | "Twikoo" | "Waline"
+                comment: true,
+                repo: 'flycodeu/codeCenter',
+                repoId: 'R_kgDOOCrLsA',
+                category: 'Announcements',
+                categoryId: 'DIC_kwDOOCrLsM4CoKjK',
+                mapping: 'pathname',
+                reactionsEnabled: true,
+                inputPosition: 'bottom',
+            },
         },
 
         /**
