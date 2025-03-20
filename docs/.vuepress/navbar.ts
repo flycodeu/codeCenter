@@ -6,6 +6,7 @@ export const navbar = defineNavbarConfig([
     {text: '标签', link: '/blog/tags/'},
     {text: '归档', link: '/blog/archives/'},
     {text: 'c++', link: '/notes/c++/'},
+    {text: 'Linux', link: '/notes/Linux/'},
     {
         text: '数据结构',
         items: [
