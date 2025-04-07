@@ -15,6 +15,7 @@ export const navbar = defineNavbarConfig([
         ]
     },
     {text: '设计模式', link: '/notes/设计模式/'},
+    {text: '业务组件', link: '/notes/业务项目/'},
     {text: '项目学习', link: '/notes/项目学习/'},
 
 
