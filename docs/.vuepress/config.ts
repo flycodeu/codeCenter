@@ -45,7 +45,13 @@ export default defineUserConfig({
             tags: true, // 是否启用标签页
             archives: true, // 是否启用归档页
             categories: true, // 是否启用分类页
-            postCover: 'right', // 文章封面位置
+            //postCover: 'right', // 文章封面位置
+            postCover: {
+                layout: 'right',
+                ratio: '16:9',
+                width: 300,
+
+            },
             pagination: 15, // 每页显示文章数量
             include: ['preview/*.md','algorithm/*.md'],
         },

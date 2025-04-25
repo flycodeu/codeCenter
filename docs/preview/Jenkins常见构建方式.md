@@ -6,7 +6,7 @@ tags:
   - Jenkins
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/logo.png
 coverStyle:
-  layout: left
+  layout: right
 ---
 
 
