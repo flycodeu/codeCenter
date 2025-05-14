@@ -112,7 +112,8 @@ Embedding模型是执行这种转换算法的机器学习模型,如Word2Vec(文�
 
 ### 向量数据库
 
-专门存储和检索数据的数据库系统。通过高效索引算法实现快速相似性搜索。
+专门存储和检索数据的数据库系统。通过高效索引算法实现快速相似性搜索。向量数据的典型结构是一个一维数组，其中的元素是数值（通常是浮点数）。这些数值表示对象或数据点在多维空间中的位置、特征或属性。
+[腾讯云向量数据库](https://cloud.tencent.com/developer/techpedia/1953)
 
 ![image-20250512111626804](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250512111626804.png)
 
@@ -393,3 +394,312 @@ public class LoveAppAdvisorConfig {
 
 
 
+# RAG核心特性
+
+## 文档收集与切割（ETL）
+
+[Spring AI ETL](https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html)
+
+文档收集和切割阶段，我们需要对知识库文档进行处理，其中涉及到提取、转换和加载 ，这个过程成为ETL( Extract, Transform, and Load)。 
+
+### Document(文档)
+
+![image-20250513104519277](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250513104519277.png)
+
+`Document` 类包含文本、元数据和可选的其他媒体类型，如图像、音频和视频。
+
+### ETL
+
+ETL 管道有三个主要组件：
+
+- 读取文档：使用DocumentReader从源数据加载文档。
+- 转换文档：使用DocumentTransformer将文档转换为后续需要处理的格式，比如去除冗余信息、分词等等。
+- 写入文档：使用DocumentWriter将文档保存到指定存储中，比如将文档以嵌入方式写入向量数据库等。
+
+![image-20250513104923705](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250513104923705.png)
+
+
+
+### 抽取（Extract）
+
+DocumentReader从源数据加载文档到内存中，源码如下：
+
+```java
+public interface DocumentReader extends Supplier<List<Document>> {
+    default List<Document> read() {
+        return (List)this.get();
+    }
+}
+```
+
+实现Supplier里面的get()接口。
+
+Spring AI内置了多种DocumentReader实现类
+
+1. JsonReader:读取JSON文档
+2. TextReader:读取纯文本文件
+3. MarkdownReader: 读取Markdown 文件
+4. PDFReader:读取PDF文档,基于Apache PdfBox库实现
+   - PagePdfDocumentReader:按照分页读取 PDF
+   -  ParagraphPdfDocumentReader: 按照段落读取 PDF
+
+5. HtmlReader:读取HTML文档,基于jsoup库实现
+6. TikaDocumentReader:基于Apache Tika库处理多种格式的文档,更灵活
+
+[Spring AI  Alibaba DocumentReader](https://java2ai.com/docs/1.0.0-M6.1/integrations/documentreader/)集成了更多额外的功能，例如飞书文档、email、B站视频内容解析器等等
+
+[开源仓库](https://github.com/alibaba/spring-ai-alibaba/tree/main/community/document-readers)如果需要自定义自己的Reader，可以在官方看到源码，了解别人是如何设计的。
+
+![Email DocumentReader](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250513134127338.png)
+
+
+
+### 转换（Transform）
+
+DocumentTransformer源码如下，实现了apply，如果需要可以自行创建符合自己的转换。
+
+```java
+public interface DocumentTransformer extends Function<List<Document>, List<Document>> {
+    default List<Document> transform(List<Document> transform) {
+        return (List)this.apply(transform);
+    }
+}
+```
+
+![实现类](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250513134523905.png)
+
+有三种转换类
+
+- TextSplitter
+- MetadataEnricher
+- ContentFormatTransformer
+
+
+
+1. TextSplitter文本分割器
+
+   `TextSplitter` 是一个抽象基类，可帮助划分文档以适应 AI 模型的上下文窗口。
+
+   ![image-20250513134833089](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250513134833089.png)
+
+TokenTextSplitter
+
+`TokenTextSplitter` 是 `TextSplitter` 的一种实现，它使用 CL100K_BASE 编码根据标记计数将文本拆分为块。
+
+这种方式考虑了语义边界。
+
+两种使用方式，具体参数参考官方文档
+
+```java
+@Component
+class MyTokenTextSplitter {
+
+    public List<Document> splitDocuments(List<Document> documents) {
+        TokenTextSplitter splitter = new TokenTextSplitter();
+        return splitter.apply(documents);
+    }
+
+    public List<Document> splitCustomized(List<Document> documents) {
+        TokenTextSplitter splitter = new TokenTextSplitter(1000, 400, 10, 5000, true);
+        return splitter.apply(documents);
+    }
+}
+```
+
+- `defaultChunkSize`：标记中每个文本块的目标大小（默认值：800）。
+- `minChunkSizeChars`：每个文本块的最小大小（以字符为单位）（默认值：350）。
+- `minChunkLengthToEmbed`：要包含的块的最小长度（默认值：5）。
+- `maxNumChunks`：要从文本生成的最大块数（默认值：10000）。
+- `keepSeparator`：是否在块中保留分隔符（如换行符）（默认值：true）。
+
+Token分词器原理		
+
+1. 使用CL100K_BASE编码将输入文本编码为token。
+2. 根据defaultChunkSize将编码后的文本分割成块。
+3. 对于每个块:
+   1.  将块解码回文本。
+   2.  尝试在minChunkSizeChars 之后找到合适的断点(句号、问号、感叹号或换行符)。
+   3.  如果找到断点,则在该点截断块。
+   4.  修剪块并根据keepSeparator 设置选择性地删除换行符。
+   5.  如果生成的块长度大于minChunkLengthToEmbed,则将其添加到输出中。
+
+4. 这个过程会一直持续到所有token都被处理完或达到maxNumChunks 为止。
+5. 如果剩余文本长度大于minChunkLengthToEmbed,则会作为最后一个块添加。
+
+
+
+2. MetadataEnricher源数据增强器
+
+- KeywordMetadataEnricher:使用AI提取关键词并添加到元数据
+- SummaryMetadataEnricher:使用AI生成文档摘要并添加到元数据。不仅可以为当前文档生成摘要,还能关联前一
+  个和后一个相邻的文档,让摘要更完整。
+
+```java
+
+@Component
+class MyDocumentEnricher {
+
+    private final ChatModel chatModel;
+
+    MyDocumentEnricher(ChatModel chatModel) {
+        this.chatModel = chatModel;
+    }
+      
+      // 关键词元信息增强器
+    List<Document> enrichDocumentsByKeyword(List<Document> documents) {
+        KeywordMetadataEnricher enricher = new KeywordMetadataEnricher(this.chatModel, 5);
+        return enricher.apply(documents);
+    }
+  
+    // 摘要元信息增强器
+    List<Document> enrichDocumentsBySummary(List<Document> documents) {
+        SummaryMetadataEnricher enricher = new SummaryMetadataEnricher(chatModel, 
+            List.of(SummaryType.PREVIOUS, SummaryType.CURRENT, SummaryType.NEXT));
+        return enricher.apply(documents);
+    }
+}
+```
+
+
+
+3. ContentFormatTransformer格式转换
+
+
+
+### 加载（Load）
+
+DocumentWriter实现了write接口
+
+```java
+public interface DocumentWriter extends Consumer<List<Document>> {
+    default void write(List<Document> documents) {
+        this.accept(documents);
+    }
+}
+```
+
+有如下实现类
+
+![image-20250513140738522](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250513140738522.png)
+
+主要分成两类
+
+1. File  文件
+
+它将 `Document` 对象列表的内容写入文件中
+
+```java
+@Component
+class MyDocumentWriter {
+
+    public void writeDocuments(List<Document> documents) {
+        FileDocumentWriter writer = new FileDocumentWriter("output.txt", true, MetadataMode.ALL, false);
+        writer.accept(documents);
+    }
+}
+```
+
+2. VectorStore  矢量存储
+
+
+
+
+
+### 流程组合示例
+
+```java
+// 抽取：从 PDF 文件读取文档
+PDFReader pdfReader = new PagePdfDocumentReader("xx.pdf");
+List<Document> documents = pdfReader.read();
+
+// 转换：分割文本并添加摘要
+TokenTextSplitter splitter = new TokenTextSplitter(500, 50);
+List<Document> splitDocuments = splitter.apply(documents);
+
+SummaryMetadataEnricher enricher = new SummaryMetadataEnricher(chatModel, 
+    List.of(SummaryType.CURRENT));
+List<Document> enrichedDocuments = enricher.apply(splitDocuments);
+
+// 加载：写入向量数据库
+vectorStore.write(enrichedDocuments);
+
+// 或者使用链式调用
+vectorStore.write(enricher.apply(splitter.apply(pdfReader.read())));
+```
+
+
+
+## 向量转换和存储
+
+[Spring AI Vector](https://docs.spring.io/spring-ai/reference/api/vectordbs.html)
+
+### Vector
+
+实现了DocumentWriter
+
+```java
+public interface VectorStore extends DocumentWriter {
+
+    default String getName() {
+		return this.getClass().getSimpleName();
+	}
+
+    void add(List<Document> documents);
+
+    void delete(List<String> idList);
+
+    void delete(Filter.Expression filterExpression);
+
+    default void delete(String filterExpression) { ... };
+
+    List<Document> similaritySearch(String query);
+
+    List<Document> similaritySearch(SearchRequest request);
+
+    default <T> Optional<T> getNativeClient() {
+		return Optional.empty();
+	}
+}
+```
+
+基本上就是增、删、查三个操作
+
+- 添加文档到向量数据库
+- 删除指定文档对应的向量数据
+- 相似度查询
+
+
+
+### 构建请求
+
+```java
+SearchRequest request = SearchRequest.builder()
+    .query("xxxxx")
+    .topK(10)                  // 返回最相似的10个结果
+    .similarityThreshold(0.7) // 相似度阈值，0.0-1.0之间
+    .filterExpression("date > '2025-05-03'")  // 过滤表达式
+    .build();
+
+List<Document> results = vectorStore.similaritySearch(request);
+```
+
+
+
+### 工作流程
+
+1. 嵌入转换:当文档被添加到向量存储时,Spring Al会使用嵌入模型将文本转换为向量。
+2. 相似度计算:查询时,查询文本同样被转换为向量,然后系统计算此向量与存储中所有向量的相似度。
+3. 相似度度量:常用的相似度计算方法包括:
+   - 余弦相似度:计算两个向量的夹角余弦值,范围在-1到1之间
+   -  欧氏距离:计算两个向量间的直线距离
+   - 点积:两个向量的点积值
+
+4. 过滤与排序:根据相似度阈值过滤结果,并按相似度排序返回最相关的文档
+
+
+
+### 支持的向量数据库
+
+https://docs.spring.io/spring-ai/reference/api/vectordbs.html
+
+可以使用[Spring AI Alibaba](https://java2ai.com/docs/1.0.0-M6.1/tutorials/vectorstore/)里面内置的Vector
