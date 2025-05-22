@@ -3,6 +3,8 @@ title: SpringAI Tools
 createTime: 2025/05/20 14:36:27
 permalink: /article/wb3rh8gx/
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250521154058.jpg
+tags:
+  - AI
 ---
 
 
@@ -65,7 +67,7 @@ public class WeatherTools {
 
 #### 编程式
 
-首先需要定义好工具类
+首先需要定义好工具类  
 
 ```java
 class WeatherTools {
@@ -522,7 +524,6 @@ public class ToolRegistration {
                 .system(SYSTEM_PROMPT)
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
-                .advisors(new MyAdvisors())
                 .tools(allTools)
                 .call()
                 .chatResponse();
@@ -544,4 +545,335 @@ public class ToolRegistration {
 ![image-20250521145113156](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250521145113156.png)
 
 
+
+## 底层原理
+
+### ToolCallback
+
+ToolCallback继承于FunctionCallback，实现如下接口
+
+```java
+public interface ToolCallback {
+	/**
+	 * Definition used by the AI model to determine when and how to call the tool.
+	 */
+	ToolDefinition getToolDefinition();
+	/**
+	 * Metadata providing additional information on how to handle the tool.
+	 */
+	ToolMetadata getToolMetadata();
+    /**
+	 * Execute tool with the given input and return the result to send back to the AI model.
+	 */
+	String call(String toolInput);
+    /**
+	 * Execute tool with the given input and context, and return the result to send back to the AI model.
+	 */
+	String call(String toolInput, ToolContext tooContext);
+}
+```
+
+- `ToolDefinition` 接口为 AI 模型提供了解工具可用性所需的信息，包括工具名称、描述和输入架构。
+- `getToolMetadata` 返回该工具的元数据
+- 两个call()是工具的执行入口，分别支持有上下文和无上下文的调用场景
+
+ToolDefinition
+
+```java
+
+public interface ToolDefinition {
+    String name();
+
+    String description();
+
+    String inputSchema();
+
+    static DefaultToolDefinition.Builder builder() {
+        return DefaultToolDefinition.builder();
+    }
+
+    static DefaultToolDefinition.Builder builder(Method method) {
+        Assert.notNull(method, "method cannot be null");
+        return DefaultToolDefinition.builder().name(ToolUtils.getToolName(method)).description(ToolUtils.getToolDescription(method)).inputSchema(JsonSchemaGenerator.generateForMethodInput(method, new JsonSchemaGenerator.SchemaOption[0]));
+    }
+
+    static ToolDefinition from(Method method) {
+        return builder(method).build();
+    }
+}
+```
+
+![inputSchema格式](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250522103318108.png)
+
+1. JsonSchemaGenerator 会解析方法签名和注解,自动生成符合JSON Schema规范的参数定义,作为ToolDefinition的
+   一部分提供给AI大模型
+2. ToolCallResultConverter 负责将各种类型的方法返回值统一转换为字符串,便于传递给AI大模型处理
+3. MethodToolCallback 实现了对注解方法的封装,使其符合接口规范
+
+我们只需要专注一业务逻辑，而不需要关心底层通信和参数转换的复杂细节，我们也可以通过自定义ToolCallResultConverter实现
+
+### Tool Context  工具上下文
+
+![image-20250522103953437](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250522103953437.png)
+
+Spring AI 支持通过 `ToolContext` API 将额外的上下文信息传递给工具。此功能允许您提供额外的用户提供的数据，这些数据可与 AI 模型传递的工具参数一起在工具执行中使用。
+
+```java
+class CustomerTools {
+    @Tool(description = "Retrieve customer information")
+    Customer getCustomerInfo(Long id, ToolContext toolContext) {
+        return customerRepository.findById(id, toolContext.get("tenantId"));
+    }
+}
+```
+
+`ToolContext` 使用用户在调用 `ChatClient` 时提供的数据进行填充
+
+```java
+ChatModel chatModel = ...
+
+String response = ChatClient.create(chatModel)
+        .prompt("Tell me more about the customer with ID 42")
+        .tools(new CustomerTools())
+        .toolContext(Map.of("tenantId", "acme"))
+        .call()
+        .content();
+
+System.out.println(response);
+```
+
+也可以直接调用ChatModel定义工具上下文
+
+```java
+ChatModel chatModel = ...
+ToolCallback[] customerTools = ToolCallbacks.from(new CustomerTools());
+ChatOptions chatOptions = ToolCallingChatOptions.builder()
+    .toolCallbacks(customerTools)
+    .toolContext(Map.of("tenantId", "acme"))
+    .build();
+Prompt prompt = new Prompt("Tell me more about the customer with ID 42", chatOptions);
+chatModel.call(prompt);
+```
+
+本质上ToolContext是一个Map
+
+```java
+public class ToolContext {
+	private final Map<String, Object> context;
+}
+```
+
+这些信息不会传递给AI模型，只有在程序内部使用，适用于：
+
+- 用户认证信息：可以在上下文传递用户token，而不暴露给模型
+- 请求追踪：上下文加入ID，便于日志追踪和调试
+- 自定义配置：不同场景传递不同信息
+
+
+
+
+
+### Return Direct 直接返回
+
+1. 定义工具时,将 returnDirect 属性设为true
+2. 当模型请求调用这个工具时,应用程序执行工具并获取结果
+3. 结果直接返回给调用者,不再发送回模型进行进一步处理
+
+这种模式很适合需要返回二进制数据(比如图片/文件)的工具、返回大量数据而不需要AI解释的工具,以及产生明确
+结果的操作(如数据库操作)。
+
+
+
+### Tool Execution 工具执行
+
+ToolCallingManager是管理AI工具调用全流程的核心组件，负责将AI模型的响应执行对应的工具并返回结果给大模型。
+
+```java
+public interface ToolCallingManager {
+
+	/**
+	 * Resolve the tool definitions from the model's tool calling options.
+	 * 模型工具调用选项中解析工具定义
+	 */
+	List<ToolDefinition> resolveToolDefinitions(ToolCallingChatOptions chatOptions);
+
+	/**
+	 * Execute the tool calls requested by the model.
+	 * 执行模型对应的工具调用
+	 */
+	ToolExecutionResult executeToolCalls(Prompt prompt, ChatResponse chatResponse);
+
+	/**
+	 * Create a default {@link ToolCallingManager} builder.
+	 */
+	static DefaultToolCallingManager.Builder builder() {
+		return DefaultToolCallingManager.builder();
+	}
+
+}
+```
+
+```java
+	public ToolExecutionResult executeToolCalls(Prompt prompt, ChatResponse chatResponse) {
+		Assert.notNull(prompt, "prompt cannot be null");
+		Assert.notNull(chatResponse, "chatResponse cannot be null");
+
+		Optional<Generation> toolCallGeneration = chatResponse.getResults()
+			.stream()
+			.filter(g -> !CollectionUtils.isEmpty(g.getOutput().getToolCalls()))
+			.findFirst();
+
+		if (toolCallGeneration.isEmpty()) {
+			throw new IllegalStateException("No tool call requested by the chat model");
+		}
+
+		AssistantMessage assistantMessage = toolCallGeneration.get().getOutput();
+
+		ToolContext toolContext = buildToolContext(prompt, assistantMessage);
+
+		InternalToolExecutionResult internalToolExecutionResult = executeToolCall(prompt, assistantMessage,
+				toolContext);
+
+		List<Message> conversationHistory = buildConversationHistoryAfterToolExecution(prompt.getInstructions(),
+				assistantMessage, internalToolExecutionResult.toolResponseMessage());
+
+		return ToolExecutionResult.builder()
+			.conversationHistory(conversationHistory)
+			.returnDirect(internalToolExecutionResult.returnDirect())
+			.build();
+	}
+
+```
+
+基本流程就是从历史上下文中拿出关键信息，判断是否有工具需要调用，有工具调用，执行完成获取结果，然后拼接到上下文。
+
+
+
+#### 框架控制的工具执行
+
+- 框架自动检测模型是否请求调用工具
+- 自动执行工具调用并获取结果
+-  自动将结果发送回模型
+-  管理整个对话流程直到得到最终答案
+
+
+
+#### 用户控制的工具执行
+
+对于需要更精细控制复杂场景，可以通过设置ToolCallingChatOptions禁止内部工具执行，然后可以自定义执行工具流程。
+
+```java
+// 配置不自动执行工具
+ChatOptions chatOptions = ToolCallingChatOptions.builder()
+    .toolCallbacks(ToolCallbacks.from(new WeatherTools()))
+    .internalToolExecutionEnabled(false)  // 禁用内部工具执行
+    .build();
+```
+
+```java
+// 创建工具调用管理器
+ToolCallingManager toolCallingManager = DefaultToolCallingManager.builder().build();
+
+// 创建初始提示
+Prompt prompt = new Prompt("xxxx", chatOptions);
+// 发送请求给模型
+ChatResponse chatResponse = chatModel.call(prompt);
+// 手动处理工具调用循环
+while (chatResponse.hasToolCalls()) {
+    // 执行工具调用
+    ToolExecutionResult toolExecutionResult = toolCallingManager.executeToolCalls(prompt, chatResponse);
+    // 创建包含工具结果的新提示
+    prompt = new Prompt(toolExecutionResult.conversationHistory(), chatOptions);
+    // 再次发送请求给模型
+    chatResponse = chatModel.call(prompt);
+}
+
+// 获取最终回答
+System.out.println(chatResponse.getResult().getOutput().getText());
+```
+
+### 异常处理
+
+里面内置了一个异常处理ToolExecutionExceptionProcessor
+
+```java
+@FunctionalInterface
+public interface ToolExecutionExceptionProcessor {
+    /**
+     * 将工具抛出的异常转换为发送给 AI 模型的字符串，或者抛出一个新异常由调用者处理
+     */
+    String process(ToolExecutionException exception);
+}
+```
+
+默认实现类提供两种处理策略
+
+- alwaysThrow 参数为false:将异常信息作为错误消息返回给AI模型,允许模型根据错误信息调整策略
+- alwaysThrow 参数为true:直接抛出异常,中断当前对话流程,由应用程序处理
+
+也可以实现自定义异常处理
+
+```java
+@Bean
+ToolExecutionExceptionProcessor customExceptionProcessor() {
+    return exception -> {
+        if (exception.getCause() instanceof IOException) {
+            // 网络错误返回友好消息给模型
+            return "Unable to access external resource. Please try a different approach.";
+        } else if (exception.getCause() instanceof SecurityException) {
+            // 安全异常直接抛出
+            throw exception;
+        }
+        // 其他异常返回详细信息
+        return "Error executing tool: " + exception.getMessage();
+    };
+}
+```
+
+### 工具解析
+
+除了使用ToolCallBack交给AI执行工具，也可以通过名称动态解析工具，通过ToolCallbackResolver接口实现的
+
+```java
+public interface ToolCallbackResolver {
+    /**
+     * 根据给定的工具名称解析对应的ToolCallback
+     */
+    @Nullable
+    ToolCallback resolve(String toolName);
+}
+```
+
+```java
+// 客户端只需提供工具名称
+String response = ChatClient.create(chatModel)
+        .prompt("What's the weather in Beijing?")
+        .toolNames("weatherTool", "timeTool")  // 只提供名称
+        .call()
+        .content();
+```
+
+也可以自定义解析逻辑
+
+```java
+@Bean
+ToolCallbackResolver customToolCallbackResolver() {
+    Map<String, ToolCallback> toolMap = new HashMap<>();
+    toolMap.put("weatherTool", new WeatherToolCallback());
+    toolMap.put("timeTool", new TimeToolCallback());   
+    return toolName -> toolMap.get(toolName);
+}
+```
+
+也可以扩展当前的解析器
+
+```java
+@Bean
+ToolCallbackResolver customToolCallbackResolver() {
+    Map<String, ToolCallback> toolMap = new HashMap<>();
+    toolMap.put("weatherTool", new WeatherToolCallback());
+    toolMap.put("timeTool", new TimeToolCallback());   
+    return toolName -> toolMap.get(toolName);
+}
+```
 
