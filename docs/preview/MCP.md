@@ -26,6 +26,9 @@ MCP三大作用：
 - 统一标准
 - 打造服务生态
 
+## MCP介绍相关文档
+[腾讯技术工程：MCP技术浪潮中的Agent应用开发新范式](https://mp.weixin.qq.com/s/BPfVDSaCNFqe39NmtMHc3g)
+
 ### MCP架构
 
 #### 整体架构
