@@ -53,7 +53,7 @@ export default defineUserConfig({
 
             },
             pagination: 15, // 每页显示文章数量
-            include: ['preview/*.md','algorithm/*.md'],
+            include: ['preview/*.md', 'algorithm/*.md', 'article/*.md'],
         },
 
         /* 博客文章页面链接前缀 */
@@ -200,6 +200,10 @@ export default defineUserConfig({
          * 加密功能
          * @see https://theme-plume.vuejs.press/guide/features/encryption/
          */
-        encrypt: {},
+        encrypt: {
+            rules: {
+           //     'preview/AI智能体.md': '123456'
+            }
+        },
     }),
 })
