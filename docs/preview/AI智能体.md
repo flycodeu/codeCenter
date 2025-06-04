@@ -214,6 +214,74 @@ public abstract class BaseAgent {
     
 }
 ```
+使用SSE实现文字流式输出
+```java
+    public SseEmitter runStream(String userPrompt) {
+        SseEmitter sseEmitter = new SseEmitter(300000L);
+        // 异步
+        CompletableFuture.runAsync(() -> {
+            try {
+                // 判断状态是否为空闲状态
+                if (this.state != AgentState.IDLE) {
+                    sseEmitter.send("Agent is not idle");
+                    sseEmitter.complete();
+                }
+                // 判断用户预设是否为空
+                if (StrUtil.isBlank(userPrompt)) {
+                    sseEmitter.send("User prompt can not be empty");
+                    sseEmitter.complete();
+                }
+                // 更新状态
+                this.state = AgentState.RUNNING;
+                // 记录消息上下文
+                messageList.add(new UserMessage(userPrompt));
+                // 保存消息
+                List<String> results = new ArrayList<>();
+                // 循环更新判断步数
+                try {
+                    for (int i = 0; i < maxSteps && state != AgentState.FINISHED; i++) {
+                        int stepNum = i + 1;
+                        currentStep = stepNum;
+                        log.info("[CurrentStep {} / MaxSteps{}] Running...", stepNum, maxSteps);
+                        String result = step();
+                        result = "Step " + stepNum + ":" + result;
+                        sseEmitter.send(result);
+                    }
+                    if (currentStep >= maxSteps) {
+                        state = AgentState.FINISHED;
+                        sseEmitter.send("Agent has finished running");
+                    }
+                    sseEmitter.complete();
+                } catch (Exception e) {
+                    try {
+                        state = AgentState.ERROR;
+                        sseEmitter.send("Agent encountered an error: " + e.getMessage());
+                    } catch (Exception ex) {
+                        sseEmitter.completeWithError(ex);
+                    }
+
+                } finally {
+                    cleanup();
+                }
+            } catch (Exception e) {
+                sseEmitter.completeWithError(e);
+            }
+        });
+        // 超时
+        sseEmitter.onTimeout(() -> {
+            this.state = AgentState.ERROR;
+            this.cleanup();
+        });
+
+        sseEmitter.onCompletion(() -> {
+            if (this.state == AgentState.RUNNING) {
+                this.state = AgentState.FINISHED;
+            }
+            this.cleanup();
+        });
+        return sseEmitter;
+    }
+```
 
 ### ReActAgent思考-行动类
 
@@ -454,6 +522,24 @@ public class FlyManus extends ToolCallAgent {
 ![image-20250603132634461](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250603132634461.png)
 
 我们可以看到详细的工具调用信息，执行步骤。
+
+
+
+### 流式输出
+
+```java
+@Resource
+private ToolCallback[] allTools;
+@Resource
+private ChatModel dashscopeChatModel; 
+@GetMapping("/manus/chat")
+public SseEmitter doChatWithManus(String message) {
+    FlyManus flyManus = new FlyManus(allTools, dashscopeChatModel);
+    return flyManus.runStream(message);
+}
+```
+
+![image-20250604103801587](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250604103801587.png)
 
 ## 智能体工作流
 
