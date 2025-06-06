@@ -4,11 +4,14 @@ createTime: 2025/06/05 11:03:30
 permalink: /article/hum6yb9x/
 tags:
   - Docker
-cover: 
+cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250606090911.jpg
 ---
 > 官网：https://www.portainer.io/
 介绍：在任何数据中心、云、网络边缘或 IIOT 设备的 Kubernetes、Docker、Swarm 和 Nomad 上，在几分钟内部署、配置、故障排除和保护容器。
 ## 基础安装
+
+
+
 ### 1. 拉取最新的Portainer
 ```bash
 docker pull portainer/portainer

@@ -5,6 +5,7 @@ permalink: /article/5fqygf47/
 tags:
   - Centos7
   - Docker
+cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250606090917.jpg
 ---
 
 

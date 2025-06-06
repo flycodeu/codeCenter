@@ -4,6 +4,7 @@ createTime: 2025/06/04 16:20:19
 permalink: /article/ouhgxof3/
 tags:
   - WSL
+cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250606090922.jpg
 ---
 
 ## 安装WSL
