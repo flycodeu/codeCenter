@@ -79,6 +79,7 @@ docker exec -it ollama /bin/bash
 
   ```
   ollama pull deepseek-r1:1.5b
+  ollama pull nomic-embed-text
   ```
 
 - **列出所有已下载模型**：

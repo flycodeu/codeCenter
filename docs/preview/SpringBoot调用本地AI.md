@@ -76,7 +76,11 @@ public class LocalAIInvokeTest {
 }
 ```
 
-4. 运行截图
+4. 流式输出
+```java
+chatModel.stream(new Prompt(prompt, OllamaOptions.builder().model(model).build()))
+```
+5. 运行截图
 
 ![image-20250506144439931](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250506144439931.png)
 
