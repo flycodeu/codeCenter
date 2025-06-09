@@ -56,6 +56,20 @@ wsl --install -d Ubuntu
 ```cmd
  wsl --set-default CentOS7
 ```
+### 注销指定系统
+```cmd
+wsl --unregister CentOS7
+```
+
+### 导出系统
+```cmd
+wsl --export CentOS7 D:\WSL\CentOS7.tar
+```
+
+### 导入系统
+```cmd
+wsl --import CentOS7 D:\WSL\CentOS7.tar --version 1
+```
 
 ### PowerShell切换系统
 
@@ -72,6 +86,8 @@ wsl -d CentOS7
 目前Centos7已经不进行维护，我们只能到如下地址，下载Centos7的exe运行[Centos7](https://github.com/mishamosher/CentOS-WSL/releases/tag/7.9-2211)
 
 [详细安装教程](https://blog.csdn.net/qq_72363261/article/details/145737342)
+
+但是这个方式存在问题，一旦重启windows或者清除缓存，就会提示系统损坏，建议安装完成后，将系统导出，重新导入，及时备份
 
 1. 下载阿里云j
 
