@@ -169,3 +169,5 @@ networks:
     driver: bridge
 ```
 
+## 连接WSL中的Redis
+详情参考[Docker 安装PgVector](Docker安装PgVector.md)

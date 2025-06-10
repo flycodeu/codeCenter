@@ -119,3 +119,6 @@ docker logs ollama
 ```
 
 ![image-20250605162045266](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250605162045266.png)
+
+## 连接WSL中的Ollama
+详情参考[Docker 安装PgVector](Docker安装PgVector.md)
