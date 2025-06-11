@@ -108,3 +108,60 @@ hostname -I
 
 ![image-20250610091712413](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250610091712413.png)
 
+
+## 安装扩展
+### 1. 创建数据库
+```bash
+docker exec -it pgvector psql -U postgres -d ai-rag-knowledge
+```
+确保数据库 ai-rag-knowledge 已存在。如果没有，可以手动创建：
+```bash
+docker exec -it pgvector psql -U postgres -c "CREATE DATABASE \"ai-rag-knowledge\";"
+```
+### 2. 安装 pgvector 插件（在该数据库里）
+连接成功后，执行：
+```bash
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+成功会输出：
+
+```bash
+CREATE EXTENSION
+```
+### 3. 创建 vector_store 表（带有 vector 类型字段）
+执行下面的 SQL（建议手动先创建）：
+```bash
+CREATE TABLE IF NOT EXISTS vector_store (
+id TEXT PRIMARY KEY,
+content TEXT,
+metadata JSONB,
+embedding VECTOR(1536)  -- 1536 是 OpenAI 向量维度，你可以根据实际情况修改
+);
+```
+
+如果你之前建表失败，需要重建
+可以先删除旧表再重建（注意数据清空）：
+```bash
+DROP TABLE IF EXISTS vector_store;
+```
+然后再执行上面的 CREATE TABLE 语句。
+
+### 4.验证是否成功
+执行：
+```bash
+\d+ vector_store
+```
+你应当看到类似输出：
+```
+ai-rag-knowledge=# \d+ vector_store
+                                           Table "public.vector_store"
+  Column   |     Type     | Collation | Nullable | Default | Storage  | Compression | Stats target | Description
+-----------+--------------+-----------+----------+---------+----------+-------------+--------------+-------------
+ id        | text         |           | not null |         | extended |             |              |
+ content   | text         |           |          |         | extended |             |              |
+ metadata  | jsonb        |           |          |         | extended |             |              |
+ embedding | vector(1536) |           |          |         | extended |             |              |
+Indexes:
+    "vector_store_pkey" PRIMARY KEY, btree (id)
+Access method: heap
+```
