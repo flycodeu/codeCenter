@@ -83,13 +83,13 @@ wsl --unregister CentOS7
 ### 导出系统为 tar 包
 
 ```cmd
-wsl --export CentOS7 D:\WSL\CentOS7.tar
+wsl --export CentOS7 D:\WSLFile\CentOS7\CentOS7.tar
 ```
 
 ### 导入系统
 
 ```cmd
-wsl --import CentOS7 D:\WSL\CentOS7.tar --version 1
+wsl --import CentOS7 D:\WSLFile\CentOS7 D:\WSLFile\CentOS7\CentOS7.tar --version 2
 ```
 
 ### 在 PowerShell 中切换到指定系统
