@@ -1,27 +1,18 @@
-# 飞云的编程宝典
+# Feiyun's Programming Encyclopedia
 
-The Site is generated using [vuepress](https://vuepress.vuejs.org/) and [vuepress-theme-plume](https://github.com/pengzhanbo/vuepress-theme-plume)
+> Personal learning roadmap and programming knowledge summary
+>
+> **Author:** 程序员飞云
+> 
+> **Website:** [https://www.flycode.icu](https://www.flycode.icu)
 
-## Install
+This site is built using [VuePress](https://vuepress.vuejs.org/) and the theme [vuepress-theme-plume](https://github.com/pengzhanbo/vuepress-theme-plume).
 
-```sh
-npm i
-```
+It includes personal notes on Java, frontend development, C++, Python, SQL, data structures and algorithms, Linux, design patterns, and more. If you find any mistakes, feel free to point them out.
 
-## Usage
+---
 
-```sh
-# start dev server
-npm run docs:dev
-# build for production
-npm run docs:build
-# preview production build in local
-npm run docs:preview
-# update vuepress and theme
-npm run vp-update
-```
+## Documentation References
 
-## Documents
-
-- [vuepress](https://vuepress.vuejs.org/)
-- [vuepress-theme-plume](https://theme-plume.vuejs.press/)
+- [VuePress Official Docs](https://vuepress.vuejs.org/)
+- [vuepress-theme-plume Theme Docs](https://theme-plume.vuejs.press/)
