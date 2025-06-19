@@ -37,7 +37,7 @@ export default defineThemeConfig({
      * @see https://theme-plume.vuejs.press/config/basic/#profile
      */
     profile: {
-        avatar: 'https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/logo.png',
+        avatar: 'https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/bg02.jpg',
         name: '飞云的编程宝典',
         description: '飞云的编程宝典',
         // circle: true,
