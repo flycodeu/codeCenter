@@ -278,3 +278,101 @@ public class OllamaConfig {
 ### 使用效果
 
 ![image-20250610112257987](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250610112257987.png)
+
+
+### 流式输出
+```java
+  @GetMapping(value = "/generate_stream_rag", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ChatResponse> generateAiResponseStream(
+            @RequestParam String model,
+            @RequestParam String prompt,
+            @RequestParam(required = false) String ragTag) {
+
+        // 1. 设置相似度阈值，过滤掉相关性太低的文档
+        double similarityThreshold = 0.7; // 根据实际情况调整
+
+        SearchRequest searchRequest = SearchRequest
+                .builder()
+                .query(prompt)
+                .topK(5)
+                .filterExpression("knowledge == '" + ragTag + "'")
+                .build();
+
+        List<Document> documents = pgVectorStore.similaritySearch(searchRequest);
+        log.info("检索到的文档: {}", documents.toString());
+
+        // 2. 过滤相似度低的文档 - 根据实际的distance字段
+        List<Document> relevantDocuments = documents.stream()
+                .filter(doc -> {
+                    // 从日志看到使用的是distance字段，distance越小表示越相似
+                    // 所以我们要过滤distance大于某个阈值的文档
+                    Double distance = doc.getMetadata().get("distance") != null ?
+                            Double.valueOf(doc.getMetadata().get("distance").toString()) : 1.0;
+                    // distance小于0.7表示相关性较高
+                    return distance <= 0.7;
+                })
+                .collect(Collectors.toList());
+
+        log.info("过滤后的相关文档数量: {}", relevantDocuments.size());
+
+        String systemPromptTemplate;
+        Map<String, Object> templateVariables = new HashMap<>();
+
+        // 3. 根据是否有相关文档来调整系统提示
+        if (relevantDocuments.isEmpty()) {
+            systemPromptTemplate = """
+            You are a knowledge base assistant. The user asked a question, but no relevant documents were found in the knowledge base.
+            
+            CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE EXACTLY:
+            - You MUST NOT answer the question using your general knowledge
+            - You MUST NOT make up or fabricate any information
+            - You MUST NOT provide any technical advice or explanations
+            - You MUST ONLY respond with: "我不清楚这个问题，知识库中没有找到相关信息。"
+            - DO NOT add any additional explanations or suggestions
+            
+            REMEMBER: You are a knowledge base search assistant, not a general AI assistant.
+            """;
+            templateVariables.put("documents", "");
+        } else {
+            systemPromptTemplate = """
+            You are a knowledge base search assistant. Here is some relevant reference material from the knowledge base:
+            
+            RELEVANT DOCUMENTS:
+            {documents}
+            
+            CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE EXACTLY:
+            - You MUST ONLY use the provided documents to answer the user's question
+            - You MUST NOT use any knowledge outside of these documents
+            - If the documents don't contain enough information to fully answer the question, do your best with what's available
+            - Answer in Chinese (中文)
+            - Be helpful and comprehensive based on the document content
+            - DO NOT say "根据知识库中的信息，我无法回答这个问题" unless the documents are completely irrelevant
+            - Structure your answer clearly and include relevant details from the documents
+            
+            REMEMBER: You are here to help users by utilizing the knowledge base content effectively.
+            """;
+
+            String documentContent = relevantDocuments.stream()
+                    .map(doc -> "文档内容: " + doc.getText())
+                    .collect(Collectors.joining("\n\n"));
+            templateVariables.put("documents", documentContent);
+        }
+
+        // 4. 创建系统消息
+        Message ragMessage = new SystemPromptTemplate(systemPromptTemplate)
+                .createMessage(templateVariables);
+
+        UserMessage userMessage = new UserMessage(prompt);
+
+        return chatClient
+                .prompt()
+                .messages(ragMessage, userMessage)
+                .options(OllamaOptions.builder()
+                        .model(model)
+                        .temperature(0.1) // 稍微提高温度以获得更自然的回答
+                        .topP(0.3) // 适当提高topP
+                        .build())
+                .stream()
+                .chatResponse();
+    }
+```
