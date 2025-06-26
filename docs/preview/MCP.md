@@ -4,6 +4,7 @@ createTime: 2025/05/23 09:55:42
 permalink: /article/qv9hyd29/
 tags:
   - AI
+  - MCP
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250528101622.jpg
 
 ---

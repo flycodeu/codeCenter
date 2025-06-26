@@ -4,6 +4,7 @@ createTime: 2025/06/26 15:43:40
 permalink: /article/9sx7h8xh/
 tags:
   - MCP
+  - AI
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/bg04.jpg
 ---
 ## 🖥️ 基于 Spring AI 的本地与在线 MCP 客户端接入实战
