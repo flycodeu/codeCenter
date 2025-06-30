@@ -21,7 +21,7 @@ Spring AI 支持本地与在线模型的统一封装调用，结合 MCP（Model 
 
 ## 🚀 本地 Ollama + Qwen3 模型接入 MCP 实践
 
-[Srping AI](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html)
+[Spring AI](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html)
 
 ### ✅ 推荐模型：Qwen3
 
@@ -41,8 +41,8 @@ Spring AI 支持本地与在线模型的统一封装调用，结合 MCP（Model 
     <artifactId>spring-ai-ollama-spring-boot-starter</artifactId>
 </dependency>
 <dependency>
-<groupId>org.springframework.ai</groupId>
-<artifactId>spring-ai-mcp-server-spring-boot-starter</artifactId>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-mcp-server-spring-boot-starter</artifactId>
 </dependency>
 ```
 
