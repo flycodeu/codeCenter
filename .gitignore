@@ -6,3 +6,10 @@ docs/.vuepress/dist
 
 .DS_Store
 *.log
+./docs/plantform/**
+/docs/plantform/MyAIAgent.drawio
+/docs/plantform/.$AIAgentFlow.drawio.bkp
+/docs/plantform/.$AIAgentTimeFlow.drawio.bkp
+/docs/plantform/.$MyAIAgent.drawio.bkp
+/docs/plantform/AIAgentFlow.drawio
+/docs/plantform/AIAgentTimeFlow.drawio
