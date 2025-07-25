@@ -1,3 +1,11 @@
+---
+title: Logback日志框架使用
+createTime: 2025/07/25 09:38:54
+permalink: /article/01nansv0/
+tags:
+  - 日志
+cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/image-20250725103647244.png
+---
 # 🚀 深入解读 Logback 日志配置，优化你的 Java 应用性能！
 
 在 Java 开发中，日志从来不只是“打印调试信息”的工具，它是性能优化、问题定位、系统稳定运行的基石。
@@ -103,13 +111,13 @@ Logback 的配置文件（默认读取 logback-spring.xml 或 logback.xml）一�
             <maxFileSize>100MB</maxFileSize>
         </timeBasedFileNamingAndTriggeringPolicy>
         <!--日志文件保留天数-->
-        <maxHistory>30</maxHistory>
+        <maxHistory>15</maxHistory>
         <totalSizeCap>10GB</totalSizeCap>
     </rollingPolicy>
 </appender>
 ```
 - 滚动策略为：按天 + 按大小；
-- 控制日志文件不超过 100MB，最多保留 30 天、10GB；
+- 控制日志文件不超过 100MB，最多保留 15 天、10GB；
 - 输出路径使用 ${log.path} 支持环境注入。
 
 ## 文件输出（WARN/ERROR）
@@ -129,8 +137,8 @@ Logback 的配置文件（默认读取 logback-spring.xml 或 logback.xml）一�
             <maxFileSize>100MB</maxFileSize>
         </timeBasedFileNamingAndTriggeringPolicy>
         <!-- 日志文件保留天数【根据服务器预留，可自行调整】 -->
-        <maxHistory>30</maxHistory>
-        <totalSizeCap>10GB</totalSizeCap>
+        <maxHistory>7</maxHistory>
+        <totalSizeCap>5GB</totalSizeCap>
     </rollingPolicy>
     <!-- WARN 级别及以上 -->
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -139,7 +147,7 @@ Logback 的配置文件（默认读取 logback-spring.xml 或 logback.xml）一�
 </appender>
 ```
 - 输出 WARN 和 ERROR 等高优先级日志
-- 日志保留 30 天，最多 10GB
+- 日志保留 7 天，最多 5GB
 - 单独区分错误日志，便于报警系统采集
 
 ## ⚡ 异步日志输出配置
@@ -239,7 +247,7 @@ Logback 的配置文件（默认读取 logback-spring.xml 或 logback.xml）一�
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
             <!--日志文件保留天数-->
-            <maxHistory>30</maxHistory>
+            <maxHistory>15</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
     </appender>
@@ -260,8 +268,8 @@ Logback 的配置文件（默认读取 logback-spring.xml 或 logback.xml）一�
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
             <!-- 日志文件保留天数【根据服务器预留，可自行调整】 -->
-            <maxHistory>30</maxHistory>
-            <totalSizeCap>10GB</totalSizeCap>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
         </rollingPolicy>
         <!-- WARN 级别及以上 -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
