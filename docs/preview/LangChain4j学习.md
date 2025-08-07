@@ -1,3 +1,11 @@
+---
+title: LangChain4j学习
+createTime: 2025/08/01 13:36:39
+permalink: /article/c1er7z4t/
+tags:
+  - LangChain4j
+cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/0a234e4682107e18d9eba574bc12c263.jpg
+---
 # LangChain4j 使用指南
 
 ## 简介
