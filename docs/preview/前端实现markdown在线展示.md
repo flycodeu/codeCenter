@@ -7,6 +7,12 @@ tags:
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/8400a606c77bef17d081cb11ae473277.jpg
 ---
 
+<ImageCard
+image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/8400a606c77bef17d081cb11ae473277.jpg"
+href="/"
+width=400
+center=true
+/>
 
 ## Vue使用markdown-it
 我们首先需要引入依赖

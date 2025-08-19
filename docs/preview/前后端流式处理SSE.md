@@ -6,6 +6,12 @@ tags:
   - SSE
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/2f2fb80273762e672c81a240c67f7cda.jpg
 ---
+<ImageCard
+image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/2f2fb80273762e672c81a240c67f7cda.jpg"
+href="/"
+width=200
+center=true
+/>
 
 ## 后端返回封装后的流式结果
 首先我们需要实现对应的AI流式输出，使用对应框架返回一个Flux对象，然后使用map方法将数据转换成对应的ServerSentEvent对象，最后使用concatWith方法将一个done事件添加到流中，返回给前端。

@@ -6,6 +6,12 @@ tags:
   - Redis
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/496a940d9a8095dd63d22e97dd8a2a34.jpg
 ---
+<ImageCard
+image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/496a940d9a8095dd63d22e97dd8a2a34.jpg"
+href="/"
+width=400
+center=true
+/>
 
 ## 1. 引入依赖
 ```xml
