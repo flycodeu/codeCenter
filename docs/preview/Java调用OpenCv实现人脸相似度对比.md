@@ -1,3 +1,11 @@
+---
+title: Java调用OpenCv实现人脸相似度对比
+createTime: 2025/08/21 16:13:40
+permalink: /article/p6u12m7f/
+tags:
+  - OpenCv
+cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/f4005b755563b4f1159e0b98f749683c.jpg
+---
 
 ## 引入依赖
 ```xml
