@@ -6,6 +6,12 @@ tags:
   - SSE
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/e848b4cad024661c5bb9b6c2d8aefca9.jpg
 ---
+<ImageCard
+image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/e848b4cad024661c5bb9b6c2d8aefca9.jpg"
+href="/"
+width=200
+center=true
+/>
 
 # Server-Sent Events (SSE) 使用指南
 
