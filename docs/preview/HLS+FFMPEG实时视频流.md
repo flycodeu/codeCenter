@@ -1,10 +1,11 @@
 ---
-title: HLS 实时流
+title: HLS+FFMPEG实时视频流
 createTime: 2025/10/22 14:21:58
 permalink: /article/46z2fsx8/
 tags: 
   - 视频流
   - HLS
+  - FFMPEG
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/a496989751bfb3e14c29f07b9ec99116.jpg
 ---
 # 使用 FFmpeg + Spring Boot 搭建大华摄像头 HLS 实时流服务（含自动重启与静态映射）
@@ -47,6 +48,24 @@ HLS（HTTP Live Streaming）是苹果提出的基于 HTTP 的流式传输协议�
 - 延迟较高（通常 2~5 秒）；
 - 对实时性要求高的场景（如监控控制）不太合适；
 - 需要持续磁盘写入（碎片化 I/O 较多）。
+
+--- 
+安装ffmpeg的build版本
+
+https://ffmpeg.org/download.html
+
+进入bin目录下，记住运行目录，设置环境变量：
+![环境变量](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/20251022160026.png)
+
+命令行输入
+
+```ffmpeg -version```
+
+运行成功后，会看到如下信息：
+
+![ffmpeg](https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/20251022160201.png)
+
+后续即可直接使用ffmpeg
 
 ---
 
