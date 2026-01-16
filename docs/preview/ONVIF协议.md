@@ -9,11 +9,12 @@ cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/3e5
 ---
 
 <ImageCard
-image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/3e5bf05d61c2bf0f032bcf6a33568d4b.jpg"
-href="/"
-width=400
-center=true
+  image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/3e5bf05d61c2bf0f032bcf6a33568d4b.jpg"
+  href="/"
+  width=400
+  center=true
 />
+
 # 基于 Java Spring Boot 的无依赖轻量级 ONVIF 协议接入技术方案
 ## 1. 概述
 ONVIF（Open Network Video Interface Forum）标准是安防行业的通用接口协议，旨在解决不同厂商（如海康威视、大华、宇视等）IP 摄像机与视频管理系统（VMS）之间的互通性问题。

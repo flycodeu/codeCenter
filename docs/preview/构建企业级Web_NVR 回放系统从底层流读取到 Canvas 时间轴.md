@@ -7,12 +7,14 @@ tags:
   - 视频
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/efa331c41ff52b964587567007ab846d.jpg
 ---
+
 <ImageCard
-image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/efa331c41ff52b964587567007ab846d.jpg"
-href="/"
-width=400
-center=true
+    image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/efa331c41ff52b964587567007ab846d.jpg"
+    href="/"
+    width=400
+    center=true
 />
+
 # 构建企业级 Web NVR 回放系统：从底层流读取到 Canvas 时间轴
 在安防视频监控项目中，"历史回放"是最考验前端交互与后端稳定性的功能模块。与普通的视频网站不同，NVR 系统需要处理碎片化的视频文件（fmp4）、绝对时间轴的映射以及多片段的无缝衔接。
 
@@ -21,7 +23,7 @@ center=true
 ## 一、 系统架构设计
 - 视频源：MediaMTX 录制的 fmp4 文件，按日期分文件夹存储（流名称/日期/时间.mp4）。
 - 后端：Spring Boot，负责文件检索和基于 RandomAccessFile 的字节流分发。
-- 前端：HTML5 <video> + Canvas 自绘时间轴。不依赖庞大的第三方播放器库，以保证对底层 Seek 行为的控制。
+- 前端：HTML5 video + Canvas 自绘时间轴。不依赖庞大的第三方播放器库，以保证对底层 Seek 行为的控制。
 
 ## 二、 后端：稳健的视频流分发
 对于 fmp4 格式（安防录像常用格式），Spring Boot 默认的 ResourceRegion 在处理 Chrome 的 Range 请求时，容易因 Content-Length

@@ -7,12 +7,14 @@ tags:
   - 视频
 cover: https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/efae30bcdf26bfdec9f4bb0326457e75.jpg
 ---
+
 <ImageCard
-image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/efae30bcdf26bfdec9f4bb0326457e75.jpg"
-href="/"
-width=400
-center=true
+    image="https://flycodeu-1314556962.cos.ap-nanjing.myqcloud.com/codeCenterImg/efae30bcdf26bfdec9f4bb0326457e75.jpg"
+    href="/"
+    width="400"
+    center="true"
 />
+
 # MediaMTX Control API 鉴权与网络路由排障技术文档（Linux / 服务器部署）
 
 本文档基于一次典型的「后端写入 MediaMTX path 配置成功，但拉流失败 / API 通过 IP 访问异常」场景整理，覆盖以下内容：
@@ -27,11 +29,11 @@ center=true
 
 - 常用诊断命令与现象解释
 
-适用环境：Linux 服务器（systemd）、MediaMTX v1.15.x、SpringBoot 后端通过 API 写入 /v3/config/paths/*。
+适用环境：Linux 服务器（systemd）、MediaMTX v1.15.x、SpringBoot 后端通过 API 写入 `/v3/config/paths/*`。
 
 ## 1. 背景与关键结论
 1. “写入成功”与“能播放”是两件事
-- 写入成功：/v3/config/paths/get/<path> 能返回该 path 的完整配置；/v3/config/paths/list 的 itemCount 增加。 
+- 写入成功：`/v3/config/paths/get/<path>` 能返回该 path 的完整配置；`/v3/config/paths/list` 的 itemCount 增加。 
 - 能播放：MediaMTX 需要能从服务器侧访问到 source 指定的 RTSP/RTMP/HLS 等源地址。网络不可达会导致 WebRTC/HLS session 报错。
 
 2. 使用 IP 访问 API 失败（authentication error / connection refused）常见原因
@@ -288,17 +290,17 @@ sudo systemctl disable containerd
 ```
 
 仅关闭 docker0 网卡（Docker 仍可能重建）：
-```
+```bash
 sudo ip link set docker0 down
 ```
-### 5.3 保留 Docker，但避免网段冲突（推荐做法）
+### 5.3 保留 Docker，但避免网段冲突
 
-修改 Docker 的默认 bridge 网段，让 docker0 不再使用 172.17.0.0/16。
+修改 Docker 的默认 bridge 网段，让 docker0 不再使用 `172.17.0.0/16`。
 ```bash
 sudo vi /etc/docker/daemon.json
 ```
 
-示例（将 bridge 改为 172.31.0.1/16）：
+示例（将 bridge 改为 `172.31.0.1/16`）：
 ```bash
 {
 "bip": "172.31.0.1/16",
@@ -342,7 +344,7 @@ ip route get 172.17.234.204
 
 - SpringBoot 与 MediaMTX 同机，通过 http://127.0.0.1:9997 调用 API
 
-- 或内网直连 http://<mediamtx-host>:9997，并在 MediaMTX 内部鉴权放行来源 IP
+- 或内网直连 `http://<mediamtx-host>:9997`，并在 MediaMTX 内部鉴权放行来源 IP
 
 这种情况下，Nginx 不是必需项。
 
