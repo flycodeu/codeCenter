@@ -7,6 +7,7 @@ export const navbar = defineNavbarConfig([
     {text: '归档', link: '/blog/archives/'},
     {text: 'c++', link: '/notes/c++/'},
     {text: 'Linux', link: '/notes/Linux/'},
+    {text: 'Linux', link: '/notes/rust/'},
     {
         text: '数据结构',
         items: [
@@ -16,7 +17,7 @@ export const navbar = defineNavbarConfig([
     },
     {text: '设计模式', link: '/notes/设计模式/'},
     {text: '业务组件', link: '/notes/业务项目/'},
-    {text: '项目学习', link: '/notes/项目学习/'},
+    {text: '独立项目', link: '/notes/独立项目/'},
 
 
 ])
