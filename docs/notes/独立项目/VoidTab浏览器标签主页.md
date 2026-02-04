@@ -1,3 +1,8 @@
+---
+title: VoidTab浏览器标签主页
+createTime: 2026/02/03 08:41:39
+permalink: /notes/独立项目/VoidTab浏览器标签主页/
+---
 # VoidTab浏览器标签主页
 VoidTab 是一个基于 Vue 3 + TypeScript 构建的极简、赛博朋克风格浏览器起始页（New Tab Extension）。
 
