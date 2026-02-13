@@ -16,6 +16,7 @@ export const navbar = defineNavbarConfig([
         ]
     },
     {text: '设计模式', link: '/notes/设计模式/'},
+    {text: 'godot', link: '/notes/godot/'},
     {text: '业务组件', link: '/notes/业务项目/'},
     {text: '独立项目', link: '/notes/独立项目/'},
 
