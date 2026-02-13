@@ -52,12 +52,12 @@ export default defineThemeConfig({
      * 公告板
      * @see https://theme-plume.vuejs.press/guide/features/bulletin/
      */
-    // bulletin: {
-    //     layout: 'top-right',
-    //     contentType: 'markdown',
-    //     title: '公告板',
-    //     content: '2025-03-04正式迁移知识库到此项目',
-    // },
+    bulletin: {
+        layout: 'top-right',
+        contentType: 'markdown',
+        title: '公告板',
+        content: '2025-03-04正式迁移知识库到此项目',
+    },
 
     /* 过渡动画 @see https://theme-plume.vuejs.press/config/basic/#transition */
     transition: {
